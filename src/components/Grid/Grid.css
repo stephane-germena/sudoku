@@ -1,0 +1,9 @@
+.grid-layout {
+    display: flex;
+    flex-direction: column;
+}
+
+.row-layout {
+    display: flex;
+    flex-direction: row;
+}
