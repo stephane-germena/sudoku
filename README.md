@@ -1,6 +1,4 @@
 TODO:
-- Timer
-- New game
 - Victory
 - Handle errors
 - Hints

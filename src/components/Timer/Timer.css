@@ -1,0 +1,22 @@
+.timer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 10px;
+  padding: 6px 14px 6px 10px;
+}
+ 
+.timer-icon {
+  font-size: 0.9rem;
+}
+ 
+.timer-value {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-given);
+  letter-spacing: 0.04em;
+  min-width: 44px;
+}

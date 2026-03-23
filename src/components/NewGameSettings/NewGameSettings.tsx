@@ -22,6 +22,9 @@ export const NewGameSettings = ({
   ) as GAME_DIFFICULTY_TYPES[];
 
   const launchFirstGame = useAppStore((state) => state.launchFirstGame);
+  const resetTimer = useAppStore((state) => state.resetTimer);
+  const setTimeRunning = useAppStore((state) => state.setTimeRunning);
+
   const setGameDifficulty = useGridStore((state) => state.setGameDifficulty);
   const startNewGame = useGridStore((state) => state.startNewGame);
   
@@ -29,7 +32,9 @@ export const NewGameSettings = ({
     launchFirstGame();
     setGameDifficulty(difficulty);
     startNewGame(difficulty);
+    resetTimer();
     onClose();
+    setTimeRunning(true);
   };
 
   const [selectedDifficulty, setSelected] = useState<GAME_DIFFICULTY_TYPES>(
@@ -39,6 +44,9 @@ export const NewGameSettings = ({
   const selectDifficulty = (difficulty: GAME_DIFFICULTY_TYPES) => {
     setSelected(difficulty); // ✅ triggers a re-render
   };
+
+  // Pause timer when modal is displayed
+  setTimeRunning(false);
 
   return (
     <>

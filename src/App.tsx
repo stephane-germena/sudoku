@@ -14,12 +14,23 @@ import { useGridStore } from "./stores/GridStore";
 import { useAppStore } from "./stores/AppStore";
 
 function App() {
-  const [showDiffPicker, setShowDiffPicker] = useState(false);
+  const [showNewGameSettings, setShowNewGameSettings] = useState(false);
 
   const displayMode = useGridStore((state) => state.displayMode);
   const grid = useGridStore((state) => state.grid);
 
   const isFirstGameLaunched = useAppStore((state) => state.isFirstGameLaunched);
+  const setTimeRunning = useAppStore((state) => state.setTimeRunning);
+
+  const handledNewGameButton = () => {
+    setShowNewGameSettings(true);
+    setTimeRunning(false);
+  };
+
+  const handleCloseNewGameSettings = () => {
+    setShowNewGameSettings(false);
+    setTimeRunning(true);
+  };
 
   const renderMainGrid = () => (
     <>
@@ -38,18 +49,18 @@ function App() {
       <header className="app-header">
         <Timer />
         <DisplayDifficulty />
-        <NewGameButton
-          showDiffPicker={showDiffPicker}
-          onClick={() => setShowDiffPicker(true)}
-          onClose={() => setShowDiffPicker(false)}
-        />
         <DisplayMode />
+        <NewGameButton
+          showDiffPicker={showNewGameSettings}
+          onClick={handledNewGameButton}
+          onClose={handleCloseNewGameSettings}
+        />
       </header>
 
       {isFirstGameLaunched ? (
         renderMainGrid()
       ) : (
-        <NewGameSettings onClose={() => setShowDiffPicker(false)} />
+        <NewGameSettings onClose={handleCloseNewGameSettings} />
       )}
     </div>
   );

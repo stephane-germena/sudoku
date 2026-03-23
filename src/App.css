@@ -105,7 +105,17 @@ body {
   margin: 0 auto;
 }
 
-/* ─── Grid area ───────────────────────────────────────────────────────────────── */
+/* --- Header area --- */
+.app-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 16px;
+}
+
+/* --- Grid area --- */
 
 .app-grid-area {
   display: flex;
@@ -113,7 +123,7 @@ body {
   width: 100%;
 }
 
-/* ─── Keyboard area ───────────────────────────────────────────────────────────── */
+/* --- Keyboard area --- */
 
 .app-keyboard-area {
   width: 100%;
