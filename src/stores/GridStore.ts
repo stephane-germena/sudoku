@@ -19,7 +19,7 @@ interface GridState {
 }
 
 export const GRID_SIZE = 9;
-const emptyCellValue = 0;
+export const EMPTY_CELL_VALUE = 0;
 const gameDifficulty = GAME_DIFFICULTIES.MEDIUM;
 
 /*
@@ -96,8 +96,8 @@ export const generateRandomSudoku = () => {
     Array.from({ length: GRID_SIZE }, (_, j) => ({
       rowIndex: i,
       colIndex: j,
-      expectedValue: emptyCellValue,
-      value: emptyCellValue,
+      expectedValue: EMPTY_CELL_VALUE,
+      value: EMPTY_CELL_VALUE,
       isGiven: true,
     })),
   );
@@ -160,8 +160,8 @@ export const generateRandomSudoku = () => {
       // BACKTRACK: Go back to previous stack frame
       grid[rowIndex][colIndex] = {
         ...grid[rowIndex][colIndex],
-        expectedValue: emptyCellValue,
-        value: emptyCellValue,
+        expectedValue: EMPTY_CELL_VALUE,
+        value: EMPTY_CELL_VALUE,
       };
       stack.pop();
       if (stack.length === 0) return grid; // Unsolvable (shouldn't happen)
@@ -172,8 +172,8 @@ export const generateRandomSudoku = () => {
 
       prev.cell = {
         ...prev.cell,
-        expectedValue: emptyCellValue,
-        value: emptyCellValue,
+        expectedValue: EMPTY_CELL_VALUE,
+        value: EMPTY_CELL_VALUE,
       };
     }
   }
@@ -193,14 +193,12 @@ const applyDifficulty = (
   let removed = 0;
 
   // Clone the grid to avoid mutating the original solution
-  // const newGrid = grid.map(row => row.map(cell => ({ ...cell, isFixed: true })));
-
   while (removed < cellsToRemove) {
     const rowIndex = Math.floor(Math.random() * GRID_SIZE);
     const colIndex = Math.floor(Math.random() * GRID_SIZE);
 
-    if (grid[rowIndex][colIndex].value !== emptyCellValue) {
-      grid[rowIndex][colIndex] = {...grid[rowIndex][colIndex], value: emptyCellValue, isGiven: false};
+    if (grid[rowIndex][colIndex].value !== EMPTY_CELL_VALUE) {
+      grid[rowIndex][colIndex] = {...grid[rowIndex][colIndex], value: EMPTY_CELL_VALUE, isGiven: false};
       removed++;
     }
   }

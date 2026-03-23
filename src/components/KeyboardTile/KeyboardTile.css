@@ -1,10 +1,61 @@
+/* ── KeyboardTile ───────────────────────────────────────────────────────────── */
+
 .keyboard-tile {
-  --size : 2rem;
-  background-color: #333;
-  border: 2px solid #fff;
-  color: white;
-  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--key-size);
+  height: var(--key-size);
+  border-radius: var(--radius-key);
+  color: var(--color-key);
+  border: 1.5px solid var(--color-key-border);
+  background: var(--color-key-bg);
   cursor: pointer;
-  width: var(--size);
-  height: var(--size);
+  transition:
+    background 0.12s ease,
+    transform 0.1s ease,
+    box-shadow 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.keyboard-tile:hover {
+  background: var(--color-key-hover);
+  box-shadow: 0 2px 8px rgba(80, 140, 80, 0.12);
+}
+
+.keyboard-tile:active {
+  transform: scale(0.91);
+  background: var(--color-key-active);
+  box-shadow: none;
+}
+
+.keyboard-tile-label {
+  font-family: var(--font-body);
+  font-size: var(--key-font-size);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* ── Erase variant ───────────────────────────────────────────────────────────── */
+
+.keyboard-tile--erase {
+  background: var(--color-key-erase-bg);
+  border-color: var(--color-key-erase-border);
+}
+
+.keyboard-tile--erase:hover {
+  background: var(--color-key-erase-hover);
+  box-shadow: 0 2px 8px rgba(200, 80, 80, 0.10);
+}
+
+.keyboard-tile--erase:active {
+  background: var(--color-key-erase-active);
+}
+
+.keyboard-tile--erase .keyboard-tile-label {
+  color: var(--color-error);
+  font-size: calc(var(--key-font-size) * 0.85);
 }

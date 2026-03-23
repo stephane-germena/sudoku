@@ -1,5 +1,4 @@
 TODO:
-- UI keyboard
 - Timer
 - New game
 - Victory

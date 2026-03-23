@@ -1,9 +1,14 @@
-.keyboard-layout {
-    display: flex;
-    flex-direction: column;
+/* ── Keyboard ───────────────────────────────────────────────────────────────── */
+ 
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--key-gap);
+  width: 100%;
 }
-
-.keyboard-row-layout {
-    display: flex;
-    flex-direction: row;
+ 
+.keyboard-row {
+  display: flex;
+  gap: var(--key-gap);
+  justify-content: center;
 }

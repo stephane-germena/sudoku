@@ -21,8 +21,14 @@ function App() {
         <NewGameButton />
         <ToogleDisplayMode />
       </header>
-      <Grid data={grid} displayMode={displayMode} />
-      <Keyboard displayMode={displayMode} />
+
+      <main className="app-grid-area">
+        <Grid data={grid} displayMode={displayMode} />
+      </main>
+
+      <div className="app-keyboard-area">
+        <Keyboard displayMode={displayMode} />
+      </div>
     </div>
   );
 }
