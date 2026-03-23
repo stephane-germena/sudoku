@@ -1,11 +1,16 @@
 import { create } from "zustand";
-import type { CellProps } from "../components/Cell/Cell";
+
+import { EMOJI, NUMBER, type DISPLAY_MODES } from "../constants/DisplayModes";
 import {
   DIFFICULTY_SETTINGS,
-  GAME_DIFFICULTIES,
   type GAME_DIFFICULTY_TYPES,
 } from "../constants/GameDifficulties";
-import { EMOJI, NUMBER, type DISPLAY_MODES } from "../constants/DisplayModes";
+
+import type { CellProps } from "../components/Cell/Cell";
+
+export const GRID_SIZE = 9;
+export const EMPTY_CELL_VALUE = 0;
+export const DEFAULT_GAME_DIFFICULTY = DIFFICULTY_SETTINGS.HARD;
 
 interface GridState {
   // Core grid
@@ -14,6 +19,7 @@ interface GridState {
 
   // Game settings
   displayMode: DISPLAY_MODES;
+  gameDifficulty: GAME_DIFFICULTY_TYPES;
 
   // Selectors
   getSelectedCell: () => CellProps | null;
@@ -25,12 +31,10 @@ interface GridState {
   updateSelectedCell: (value: number) => void;
 
   // Game flow
+  startNewGame: (gameDifficulty?: GAME_DIFFICULTY_TYPES) => void;
+  setGameDifficulty: (gameDifficulty: GAME_DIFFICULTY_TYPES) => void;
   toggleDisplayMode: (displayMode?: DISPLAY_MODES) => void;
 }
-
-export const GRID_SIZE = 9;
-export const EMPTY_CELL_VALUE = 0;
-const gameDifficulty = GAME_DIFFICULTIES.EASY;
 
 /*
  * Check if a value could fit in a given cell
@@ -198,7 +202,7 @@ const applyDifficulty = (
   grid: CellProps[][],
   difficulty: GAME_DIFFICULTY_TYPES,
 ) => {
-  const { clues } = DIFFICULTY_SETTINGS[difficulty];
+  const { clues } = difficulty;
   const cellsToRemove = GRID_SIZE * GRID_SIZE - clues;
   let removed = 0;
 
@@ -219,19 +223,21 @@ const applyDifficulty = (
   return grid;
 };
 
-// const initialGrid: CellProps[][] = generateRandomSudoku();
-const initialGrid: CellProps[][] = applyDifficulty(
-  generateRandomSudoku(),
-  gameDifficulty,
-);
+const buildNewGrid = (difficulty: GAME_DIFFICULTY_TYPES): CellProps[][] => {
+  const grid = generateRandomSudoku();
+  return applyDifficulty(grid, difficulty);
+};
 
 /*
  * Grid store
  */
 export const useGridStore = create<GridState>((set, get) => ({
-  grid: initialGrid,
+  grid: buildNewGrid(DEFAULT_GAME_DIFFICULTY),
   selectedCell: null,
   displayMode: NUMBER,
+  gameDifficulty: DEFAULT_GAME_DIFFICULTY,
+
+  // ----- Selectors -----
 
   getSelectedCell: () => {
     const { grid, selectedCell } = get();
@@ -240,6 +246,8 @@ export const useGridStore = create<GridState>((set, get) => ({
 
     return grid[selectedCell.rowIndex][selectedCell.colIndex];
   },
+
+  // ----- Cell actions -----
 
   setSelectedCell: (rowIndex, colIndex) => {
     set({
@@ -278,7 +286,23 @@ export const useGridStore = create<GridState>((set, get) => ({
     get().updateCell(selectedCell.rowIndex, selectedCell.colIndex, value);
   },
 
-  // Game flow
+  // ----- Game flow -----
+
+  startNewGame: (gameDifficulty) => {
+    set(() => {
+      return {
+        grid: buildNewGrid(
+          gameDifficulty ? gameDifficulty : DEFAULT_GAME_DIFFICULTY,
+        ),
+      };
+    });
+  },
+
+  setGameDifficulty: (gameDifficulty) => {
+    set({
+      gameDifficulty: gameDifficulty,
+    });
+  },
 
   toggleDisplayMode: (displayMode) => {
     set((state) => ({

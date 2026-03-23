@@ -1,7 +1,8 @@
 import "./DisplayMode.css";
 
-import { useGridStore } from "../../stores/GridStore";
 import { EMOJI } from "../../constants/DisplayModes";
+
+import { useGridStore } from "../../stores/GridStore";
 
 export const DisplayMode = () => {
   const displayMode = useGridStore((state) => state.displayMode);

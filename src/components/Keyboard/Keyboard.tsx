@@ -5,7 +5,9 @@ import {
   DISPLAY_MAPS,
   type DISPLAY_MODES,
 } from "../../constants/DisplayModes";
+
 import { KeyboardTile } from "../KeyboardTile/KeyboardTile";
+
 import { EMPTY_CELL_VALUE } from "../../stores/GridStore";
 
 interface KeyboardProps {

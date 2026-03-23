@@ -1,0 +1,16 @@
+.new-game-button {
+  background: var(--color-accent-strong);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 8px 18px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+ 
+.new-game-button:hover  { background: var(--color-accent-dark); }
+.new-game-button:active { transform: scale(0.96); }

@@ -1,0 +1,161 @@
+/* --- Global layout --- */
+
+.new-game-settings-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.22);
+  z-index: 100;
+  animation: fadeIn 0.2s ease;
+}
+
+.new-game-settings-layout {
+  position: fixed;
+  bottom: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+
+  background: var(--color-surface);
+  border-radius: 24px;
+  padding: 12px 20px 36px;
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: slideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+  box-shadow: 0 -8px 40px rgba(80, 140, 80, 0.12);
+  border-top: 1.5px solid var(--color-border-subtle);
+}
+
+.new-game-settings-handle {
+  width: 40px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--color-border-subtle);
+  margin-bottom: 20px;
+}
+ 
+.new-game-settings-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-given);
+  margin: 0 0 4px;
+}
+ 
+.new-game-settings-subtitle {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--color-accent);
+  margin: 0 0 20px;
+}
+
+/* --- Cards --- */
+ 
+.new-game-settings-cards {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+ 
+.new-game-settings-card {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 8px 12px;
+  border-radius: 16px;
+  border: 1.5px solid var(--color-border-subtle);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+ 
+.new-game-settings-card:hover {
+  background: var(--cell-given-bg);
+  border-color: var(--color-accent);
+}
+ 
+.new-game-settings-card:active {
+  transform: scale(0.96);
+}
+ 
+.new-game-settings-card-active {
+  background: var(--cell-given-bg);
+  border: 2px solid var(--color-accent-strong);
+}
+ 
+.new-game-settings-card-check {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-accent-strong);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ 
+.new-game-settings-card-emoji {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+ 
+.new-game-settings-card-label {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-given);
+}
+
+/* --- Start button --- */
+ 
+.new-game-settings-start {
+  width: 100%;
+  padding: 16px;
+  border-radius: 50px;
+  border: none;
+  background: var(--color-accent-strong);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+ 
+.new-game-settings-start:hover {
+  background: var(--color-accent-dark);
+}
+ 
+.new-game-settings-start:active {
+  transform: scale(0.98);
+}
+ 
+/* --- Animations --- */
+ 
+@keyframes slideUp {
+  from { transform: translateX(-50%) translateY(100%); }
+  to   { transform: translateX(-50%) translateY(0); }
+}
+ 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

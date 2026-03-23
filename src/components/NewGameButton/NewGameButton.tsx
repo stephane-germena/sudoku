@@ -1,5 +1,38 @@
-import "./NewGameButton.css"
+import "./NewGameButton.css";
 
-export const NewGameButton = () => {
-  return <div className="new-game-button">New game</div>;
+import { NewGameSettings } from "../NewGameSettings/NewGameSettings";
+
+import { useGridStore } from "../../stores/GridStore";
+
+interface NewGameButtonProps {
+  showDiffPicker: boolean,
+  onClick?: () => void;
+  onClose: () => void;
+}
+
+export const NewGameButton = ({ showDiffPicker, onClick, onClose }: NewGameButtonProps) => {
+  const startNewGame = useGridStore((state) => state.startNewGame);
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      startNewGame();
+    }
+  };
+
+  return (
+    <>
+      <div className="new-game-button" onClick={handleClick}>
+        + New game
+      </div>
+
+      {/* -- New game settings -- */}
+      {showDiffPicker && (
+        <NewGameSettings
+          onClose={onClose}
+        />
+      )}
+    </>
+  );
 };

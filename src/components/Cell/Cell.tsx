@@ -1,7 +1,8 @@
 import "./Cell.css";
 
-import { GRID_SIZE, useGridStore } from "../../stores/GridStore";
 import React from "react";
+
+import { GRID_SIZE, useGridStore } from "../../stores/GridStore";
 
 export interface CellProps {
   rowIndex: number;
