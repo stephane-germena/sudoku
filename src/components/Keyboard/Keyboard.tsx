@@ -31,6 +31,7 @@ export const Keyboard = ({ displayMode }: KeyboardProps) => {
               displayValue={
                 tileValue === EMPTY_CELL_VALUE ? "⌫" : displayMap[tileValue]
               }
+              variant={tileValue === EMPTY_CELL_VALUE ? "erase" : undefined}
             />
           ))}
         </div>

@@ -19,7 +19,7 @@
   /* ── Cell colours ────────────────────────────────────────────────────────── */
   --cell-bg: #ffffff;
   --cell-given-bg: #e9f5e1;
-  --cell-highlight-bg: #f0f8f0;
+  --cell-highlight-bg: #f1f3fd;
   --cell-selected-bg: #ebf4ff;
   --cell-error-bg: #ffeeee;
   --grid-cell-border: #d4ead0;

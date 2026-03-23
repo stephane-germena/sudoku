@@ -5,22 +5,32 @@ import {
   GAME_DIFFICULTIES,
   type GAME_DIFFICULTY_TYPES,
 } from "../constants/GameDifficulties";
+import { EMOJI, NUMBER, type DISPLAY_MODES } from "../constants/DisplayModes";
 
 interface GridState {
+  // Core grid
   grid: CellProps[][];
   selectedCell: { rowIndex: number; colIndex: number } | null;
+
+  // Game settings
+  displayMode: DISPLAY_MODES;
+
+  // Selectors
   getSelectedCell: () => CellProps | null;
+
+  // Cell actions
   setSelectedCell: (rowIndex: number, colIndex: number) => void;
+  unselectCell: () => void;
   updateCell: (rowIndex: number, colIndex: number, value: number) => void;
   updateSelectedCell: (value: number) => void;
-  computeRowSum: (rowIndex: number) => number;
-  computeColSum: (colIndex: number) => number;
-  computeAreaSum: (startCell: CellProps, endCell: CellProps) => number;
+
+  // Game flow
+  toggleDisplayMode: (displayMode?: DISPLAY_MODES) => void;
 }
 
 export const GRID_SIZE = 9;
 export const EMPTY_CELL_VALUE = 0;
-const gameDifficulty = GAME_DIFFICULTIES.MEDIUM;
+const gameDifficulty = GAME_DIFFICULTIES.EASY;
 
 /*
  * Check if a value could fit in a given cell
@@ -198,7 +208,11 @@ const applyDifficulty = (
     const colIndex = Math.floor(Math.random() * GRID_SIZE);
 
     if (grid[rowIndex][colIndex].value !== EMPTY_CELL_VALUE) {
-      grid[rowIndex][colIndex] = {...grid[rowIndex][colIndex], value: EMPTY_CELL_VALUE, isGiven: false};
+      grid[rowIndex][colIndex] = {
+        ...grid[rowIndex][colIndex],
+        value: EMPTY_CELL_VALUE,
+        isGiven: false,
+      };
       removed++;
     }
   }
@@ -217,6 +231,7 @@ const initialGrid: CellProps[][] = applyDifficulty(
 export const useGridStore = create<GridState>((set, get) => ({
   grid: initialGrid,
   selectedCell: null,
+  displayMode: NUMBER,
 
   getSelectedCell: () => {
     const { grid, selectedCell } = get();
@@ -229,6 +244,12 @@ export const useGridStore = create<GridState>((set, get) => ({
   setSelectedCell: (rowIndex, colIndex) => {
     set({
       selectedCell: { rowIndex, colIndex },
+    });
+  },
+
+  unselectCell: () => {
+    set({
+      selectedCell: null,
     });
   },
 
@@ -257,67 +278,15 @@ export const useGridStore = create<GridState>((set, get) => ({
     get().updateCell(selectedCell.rowIndex, selectedCell.colIndex, value);
   },
 
-  /*
-   * Returns the sum of all cells in a given row
-   */
-  computeRowSum: (rowIndex) => {
-    let rowSum = 0;
+  // Game flow
 
-    const { grid } = get();
-    const row = grid[rowIndex];
-
-    row.forEach((cell) => {
-      rowSum += cell.value;
-    });
-
-    return rowSum;
-  },
-
-  /*
-   * Returns the sum of all cells in a given column
-   */
-  computeColSum: (colIndex) => {
-    let colSum = 0;
-
-    const { grid } = get();
-
-    grid.forEach((row) => {
-      row.forEach((cell) => {
-        if (cell.colIndex === colIndex) {
-          colSum += cell.value;
-        }
-      });
-    });
-
-    return colSum;
-  },
-
-  /*
-   *
-   */
-  computeAreaSum: (startCell, endCell) => {
-    let areaSum = 0;
-
-    const { grid } = get();
-
-    // 1. Normalize coordinates (in case startCell is "below" or "right" of endCell)
-    const rowStart = Math.min(startCell.rowIndex, endCell.rowIndex);
-    const rowEnd = Math.max(startCell.rowIndex, endCell.rowIndex);
-    const colStart = Math.min(startCell.colIndex, endCell.colIndex);
-    const colEnd = Math.max(startCell.colIndex, endCell.colIndex);
-
-    // 2. Loop through the rectangular area
-    for (let r = rowStart; r <= rowEnd; r++) {
-      for (let c = colStart; c <= colEnd; c++) {
-        const cellValue = grid[r][c].value;
-
-        // Only add if it's a valid number (handles empty strings/NaN)
-        if (!isNaN(cellValue)) {
-          areaSum += cellValue;
-        }
-      }
-    }
-
-    return areaSum;
+  toggleDisplayMode: (displayMode) => {
+    set((state) => ({
+      displayMode: displayMode
+        ? displayMode
+        : state.displayMode === NUMBER
+          ? EMOJI
+          : NUMBER,
+    }));
   },
 }));

@@ -5,12 +5,11 @@ import { Grid } from "./components/Grid/Grid";
 import { Keyboard } from "./components/Keyboard/Keyboard";
 import { NewGameButton } from "./components/NewGameButton/NewGameButton";
 import { Timer } from "./components/Timer/Timer";
-import { ToogleDisplayMode } from "./components/ToogleDisplayMode/ToogleDisplayMode";
+import { DisplayMode } from "./components/DisplayMode/DisplayMode";
 import { useGridStore } from "./stores/GridStore";
 
 function App() {
-  const displayMode = "NUMBER";
-
+  const displayMode = useGridStore((state) => state.displayMode);
   const grid = useGridStore((state) => state.grid);
 
   return (
@@ -19,7 +18,7 @@ function App() {
         <Timer />
         <DifficultyDisplay />
         <NewGameButton />
-        <ToogleDisplayMode />
+        <DisplayMode />
       </header>
 
       <main className="app-grid-area">

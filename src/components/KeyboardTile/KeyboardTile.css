@@ -41,21 +41,21 @@
 
 /* ── Erase variant ───────────────────────────────────────────────────────────── */
 
-.keyboard-tile--erase {
+.keyboard-tile-erase {
   background: var(--color-key-erase-bg);
   border-color: var(--color-key-erase-border);
 }
 
-.keyboard-tile--erase:hover {
+.keyboard-tile-erase:hover {
   background: var(--color-key-erase-hover);
   box-shadow: 0 2px 8px rgba(200, 80, 80, 0.10);
 }
 
-.keyboard-tile--erase:active {
+.keyboard-tile-erase:active {
   background: var(--color-key-erase-active);
 }
 
-.keyboard-tile--erase .keyboard-tile-label {
+.keyboard-tile-erase .keyboard-tile-label {
   color: var(--color-error);
   font-size: calc(var(--key-font-size) * 0.85);
 }

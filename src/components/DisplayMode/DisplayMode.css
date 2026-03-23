@@ -1,0 +1,64 @@
+.display-mode-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 120px;
+  height: 32px;
+  background: var(--cell-given-bg);
+  border: 1.5px solid var(--color-border-subtle);
+  border-radius: 50px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.display-mode-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 56px;
+  height: 24px;
+  border-radius: 50px;
+  background: var(--color-accent-strong);
+  transition: left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 0;
+}
+
+.display-mode-toggle-emoji .display-mode-thumb {
+  left: calc(100% - 58px);
+}
+
+.display-mode-label {
+  position: absolute;
+  z-index: 1;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: color 0.2s ease;
+  pointer-events: none;
+}
+
+.display-mode-label-num {
+  left: 0;
+  width: 60px;
+  text-align: center;
+  color: #fff;
+}
+
+.display-mode-label-emoji {
+  right: 0;
+  width: 60px;
+  text-align: center;
+  font-size: 1rem;
+  color: var(--color-accent);
+}
+
+.display-mode-toggle-emoji .display-mode-label-num {
+  color: var(--color-accent);
+}
+
+.display-mode-toggle-emoji .display-mode-label-emoji {
+  color: #fff;
+}

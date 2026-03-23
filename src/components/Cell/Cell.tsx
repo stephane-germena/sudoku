@@ -22,27 +22,25 @@ export const Cell = ({
 }: CellProps) => {
   const selectedCell = useGridStore((state) => state.selectedCell);
   const setSelectedCell = useGridStore((state) => state.setSelectedCell);
+  const unselectCell = useGridStore((state) => state.unselectCell);
 
   const isCellSeletected =
     selectedCell?.rowIndex === rowIndex && selectedCell?.colIndex === colIndex;
 
-  /*
   const isInSelectedRow = selectedCell?.rowIndex === rowIndex;
   const isInSelectedCol = selectedCell?.colIndex === colIndex;
-  const isInSelectedBox =
-    selectedCell &&
-    Math.floor(selectedCell.rowIndex / 3) === Math.floor(rowIndex / 3) &&
-    Math.floor(selectedCell.colIndex / 3) === Math.floor(colIndex / 3);
-  */
 
   const hasError = value !== 0 && value !== expectedValue;
 
   const classes = [
     "cell",
     isCellSeletected ? "cell-selected" : "",
+    !isCellSeletected && (isInSelectedRow || isInSelectedCol)
+      ? "cell-highlight"
+      : "",
     hasError ? "cell-error" : "",
     value !== 0 && !isGiven ? "cell-filled" : "",
-    isGiven ? "cell-given" : "",
+    isGiven ? "cell-given" : "cell-not-given",
   ]
     .filter(Boolean)
     .join(" ");
@@ -66,11 +64,19 @@ export const Cell = ({
     borderBottom: borderBottomStyle,
   };
 
+  const handleClick = (rowIndex: number, colIndex: number) => {
+    if (isGiven) {
+      unselectCell();
+    } else {
+      setSelectedCell(rowIndex, colIndex);
+    }
+  };
+
   return (
     <div
       className={classes}
       style={borderStyle}
-      onClick={() => setSelectedCell(rowIndex, colIndex)}
+      onClick={() => handleClick(rowIndex, colIndex)}
     >
       <span className="cell-value">
         {displayValue !== null ? displayValue : value}

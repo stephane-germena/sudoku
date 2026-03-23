@@ -7,7 +7,6 @@
   justify-content: center;
   width: var(--cell-size);
   height: var(--cell-size);
-  cursor: pointer;
   background: var(--cell-bg);
   transition:
     background 0.15s ease,
@@ -21,8 +20,13 @@
   background: var(--cell-given-bg);
 }
 
-.cell:hover {
+.cell-not-given:hover {
+  cursor: pointer;
   background: var(--cell-selected-bg) !important;
+}
+
+.cell-highlight {
+  background: var(--cell-highlight-bg);
 }
 
 .cell-selected {
