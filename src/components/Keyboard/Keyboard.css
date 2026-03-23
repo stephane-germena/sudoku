@@ -1,0 +1,9 @@
+.keyboard-layout {
+    display: flex;
+    flex-direction: column;
+}
+
+.keyboard-row-layout {
+    display: flex;
+    flex-direction: row;
+}

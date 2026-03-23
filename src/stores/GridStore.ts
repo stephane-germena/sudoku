@@ -1,64 +1,334 @@
 import { create } from "zustand";
-
-// 1. Define the shape of your data
-interface CellData {
-  value: string;
-}
+import type { CellProps } from "../components/Cell/Cell";
+/*
+import {
+  DIFFICULTY_SETTINGS,
+  GAME_DIFFICULTIES,
+  type GAME_DIFFICULTY_TYPES,
+} from "../constants/GameDifficulties";
+*/
 
 interface GridState {
-  grid: CellData[][];
+  grid: CellProps[][];
   selectedCell: { rowIndex: number; colIndex: number } | null;
+  getSelectedCell: () => CellProps | null;
   setSelectedCell: (rowIndex: number, colIndex: number) => void;
-  isCellSelected: (rowIndex: number, colIndex: number) => boolean;
-  updateCell: (rowIndex: number, colIndex: number) => void;
+  updateCell: (rowIndex: number, colIndex: number, value: number) => void;
+  updateSelectedCell: (value: number) => void;
+  computeRowSum: (rowIndex: number) => number;
+  computeColSum: (colIndex: number) => number;
+  computeAreaSum: (startCell: CellProps, endCell: CellProps) => number;
 }
 
-const initialGrid: CellData[][] = [
-  [{ value: "1" }, { value: "1" }, { value: "1" }, { value: "1" }],
-  [{ value: "1" }, { value: "1" }, { value: "1" }, { value: "1" }],
-  [{ value: "1" }, { value: "1" }, { value: "1" }, { value: "1" }],
-  [{ value: "1" }, { value: "1" }, { value: "1" }, { value: "1" }],
-];
+export const GRID_SIZE = 9;
+const emptyCellValue = 0;
+// const gameDifficulty = GAME_DIFFICULTIES.EASY;
 
+/*
+ * Check if a value could fit in a given cell
+ */
+const isValid = (
+  grid: CellProps[][],
+  row: number,
+  col: number,
+  num: number,
+) => {
+  const valueToCompare = num;
+
+  for (let i = 0; i < GRID_SIZE; i++) {
+    // 1. Check Row (Horizontal)
+    if (i !== col && grid[row][i].expectedValue === valueToCompare)
+      return false;
+
+    // 2. Check Column (Vertical)
+    if (i !== row && grid[i][col].expectedValue === valueToCompare)
+      return false;
+  }
+
+  // 3. Check 3x3 Square
+  const rowStart = Math.floor(row / 3) * 3;
+  const colStart = Math.floor(col / 3) * 3;
+
+  for (let r = rowStart; r < rowStart + 3; r++) {
+    for (let c = colStart; c < colStart + 3; c++) {
+      if (
+        (r !== row || c !== col) &&
+        grid[r][c].expectedValue === valueToCompare
+      ) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+};
+
+/*
+ *
+ */
+/*
+const possibleValues = (
+  grid: CellProps[][],
+  rowIndex: number,
+  colIndex: number,
+) => {
+  let possibleValues = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+  // Check row
+  for (let i = 0; i < GRID_SIZE; i++) {
+    // Check row, column, and 3x3 subgrid simultaneously
+    const rowStart = 3 * Math.floor(row / 3);
+    const colStart = 3 * Math.floor(col / 3);
+
+    if (possibleValues.includes(grid[row][i].expectedValue)) possibleValues = possibleValues.filter(item => item !== grid[row][i].expectedValuevalue);
+    if (grid[i][col].value === num) return false;
+    if (grid[rowStart + Math.floor(i / 3)][colStart + (i % 3)].value === num)
+      return false;
+  }
+
+  return possibleValues;
+};
+*/
+
+/*
+ *
+ */
+export const generateRandomSudoku = () => {
+  const grid = Array.from({ length: GRID_SIZE }, () =>
+    Array<CellProps>(GRID_SIZE),
+  );
+
+  const initialValuesToTest = [1, 2, 3, 4, 5, 6, 7, 8, 9].sort(
+    () => Math.random() - 0.5,
+  );
+
+  for (let i = 0; i < GRID_SIZE; i++) {
+    for (let j = 0; j < GRID_SIZE; j++) {
+      grid[i][j] = {
+        rowIndex: i,
+        colIndex: j,
+        expectedValue: emptyCellValue,
+        value: emptyCellValue,
+      };
+    }
+  }
+
+  const stack: {
+    cell: CellProps;
+    key: string;
+    remainingValuesToTest: number[];
+  }[] = [];
+  let rowIndex = 0;
+  let colIndex = 0;
+
+  while (rowIndex < GRID_SIZE) {
+    if (!stack.some((e) => e.key === rowIndex + "-" + colIndex)) {
+      stack.push({
+        cell: grid[rowIndex][colIndex],
+        key: rowIndex + "-" + colIndex,
+        remainingValuesToTest: initialValuesToTest,
+      });
+    }
+
+    let found = false;
+    const current = stack[stack.length - 1];
+
+    // Try the numbers in the current stack frame
+    while (current.remainingValuesToTest.length > 0) {
+      const testedValue = current.remainingValuesToTest[0];
+
+      current.remainingValuesToTest = current.remainingValuesToTest.filter(
+        (num) => num !== testedValue,
+      );
+
+      const isTestValid = isValid(grid, rowIndex, colIndex, testedValue);
+
+      if (isTestValid) {
+        grid[rowIndex][colIndex] = {
+          ...grid[rowIndex][colIndex],
+          expectedValue: testedValue,
+          value: testedValue,
+        };
+        found = true;
+        break;
+      }
+    }
+
+    if (found) {
+      // Move to next cell
+      colIndex = colIndex + 1;
+      if (colIndex === GRID_SIZE) {
+        rowIndex = rowIndex + 1;
+        colIndex = 0;
+      }
+    } else {
+      // BACKTRACK: Go back to previous stack frame
+      grid[rowIndex][colIndex] = {
+        ...grid[rowIndex][colIndex],
+        expectedValue: emptyCellValue,
+        value: emptyCellValue,
+      };
+      stack.pop();
+      if (stack.length === 0) return grid; // Unsolvable (shouldn't happen)
+      const prev = stack[stack.length - 1];
+
+      rowIndex = prev.cell.rowIndex;
+      colIndex = prev.cell.colIndex;
+
+      prev.cell = {
+        ...prev.cell,
+        expectedValue: emptyCellValue,
+        value: emptyCellValue,
+      };
+    }
+  }
+
+  return grid;
+};
+
+/*
+ *
+ */
+/*
+const applyDifficulty = (
+  grid: CellProps[][],
+  difficulty: GAME_DIFFICULTY_TYPES,
+) => {
+  const { clues } = DIFFICULTY_SETTINGS[difficulty];
+  const cellsToRemove = GRID_SIZE * GRID_SIZE - clues;
+  let removed = 0;
+
+  // Clone the grid to avoid mutating the original solution
+  // const newGrid = grid.map(row => row.map(cell => ({ ...cell, isFixed: true })));
+
+  while (removed < cellsToRemove) {
+    const rowIndex = Math.floor(Math.random() * GRID_SIZE);
+    const colIndex = Math.floor(Math.random() * GRID_SIZE);
+
+    if (grid[rowIndex][colIndex].value !== emptyCellValue) {
+      grid[rowIndex][colIndex].value = emptyCellValue;
+      removed++;
+    }
+  }
+  return grid;
+};
+*/
+
+const initialGrid: CellProps[][] = generateRandomSudoku();
+/*
+const initialGrid: CellProps[][] = applyDifficulty(
+  generateSudokuIterative(),
+  gameDifficulty,
+);
+*/
+
+/*
+ * Grid store
+ */
 export const useGridStore = create<GridState>((set, get) => ({
   grid: initialGrid,
   selectedCell: null,
 
-  setSelectedCell: (rowIndex, colIndex) =>
-    set({
-      selectedCell: { rowIndex, colIndex },
-    }),
+  getSelectedCell: () => {
+    const { grid, selectedCell } = get();
 
-  isCellSelected: (rowIndex, colIndex) => {
-    const state = get();
-    return (
-      rowIndex === state.selectedCell?.rowIndex &&
-      colIndex === state.selectedCell?.colIndex
-    );
+    if (!selectedCell) return null;
+
+    return grid[selectedCell.rowIndex][selectedCell.colIndex];
   },
 
-  updateCell: (rowIndex, colIndex) => {
-    get().setSelectedCell(rowIndex, colIndex);
+  setSelectedCell: (rowIndex, colIndex) => {
+    set({
+      selectedCell: { rowIndex, colIndex },
+    });
+  },
 
+  updateCell: (rowIndex, colIndex, value) => {
     set((state) => {
-      // 2. Create a deep copy of the grid using map (Immutability)
+      // Create a deep copy of the grid using map (Immutability)
       const newGrid = state.grid.map((row, rIdx) => {
         if (rIdx !== rowIndex) return row; // If not the row we want, keep it
 
         return row.map((cell, cIdx) => {
           if (cIdx !== colIndex) return cell; // If not the cell we want, keep it
 
-          // 3. Logic: Increment the string value
-          const currentNum = parseInt(cell.value);
-          return { ...cell, value: (currentNum + 1).toString() };
+          return { ...cell, value: value };
         });
       });
 
-      // 4. If you want an alert, do it here before returning the state
-      // console.log(`Cell at [${rowIndex}, ${colIndex}] updated`);
-      // console.log(state);
-
       return { grid: newGrid };
     });
+  },
+
+  updateSelectedCell: (value) => {
+    const selectedCell = get().getSelectedCell();
+
+    if (!selectedCell) return null;
+
+    get().updateCell(selectedCell.rowIndex, selectedCell.colIndex, value);
+  },
+
+  /*
+   * Returns the sum of all cells in a given row
+   */
+  computeRowSum: (rowIndex) => {
+    let rowSum = 0;
+
+    const { grid } = get();
+    const row = grid[rowIndex];
+
+    row.forEach((cell) => {
+      rowSum += cell.value;
+    });
+
+    return rowSum;
+  },
+
+  /*
+   * Returns the sum of all cells in a given column
+   */
+  computeColSum: (colIndex) => {
+    let colSum = 0;
+
+    const { grid } = get();
+
+    grid.forEach((row) => {
+      row.forEach((cell) => {
+        if (cell.colIndex === colIndex) {
+          colSum += cell.value;
+        }
+      });
+    });
+
+    return colSum;
+  },
+
+  /*
+   *
+   */
+  computeAreaSum: (startCell, endCell) => {
+    let areaSum = 0;
+
+    const { grid } = get();
+
+    // 1. Normalize coordinates (in case startCell is "below" or "right" of endCell)
+    const rowStart = Math.min(startCell.rowIndex, endCell.rowIndex);
+    const rowEnd = Math.max(startCell.rowIndex, endCell.rowIndex);
+    const colStart = Math.min(startCell.colIndex, endCell.colIndex);
+    const colEnd = Math.max(startCell.colIndex, endCell.colIndex);
+
+    // 2. Loop through the rectangular area
+    for (let r = rowStart; r <= rowEnd; r++) {
+      for (let c = colStart; c <= colEnd; c++) {
+        const cellValue = grid[r][c].value;
+
+        // Only add if it's a valid number (handles empty strings/NaN)
+        if (!isNaN(cellValue)) {
+          areaSum += cellValue;
+        }
+      }
+    }
+
+    return areaSum;
   },
 }));

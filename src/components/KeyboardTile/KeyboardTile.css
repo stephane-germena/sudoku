@@ -1,0 +1,10 @@
+.keyboard-tile {
+  --size : 2rem;
+  background-color: #333;
+  border: 2px solid #fff;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  width: var(--size);
+  height: var(--size);
+}

@@ -1,6 +1,6 @@
 .cell {
   --size : 2rem;
-  border: 2px solid #333;
+  border: 1px solid #333;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,4 +12,9 @@
 
 .cell-selected {
   background-color: aqua;
+  border-color: blueviolet;
+}
+
+.cell-error {
+  background-color: rgb(248, 146, 146);
 }
