@@ -1,20 +1,42 @@
+/* ── Cell ──────────────────────────────────────────────────────────────────── */
+ 
 .cell {
-  --size : 2rem;
-  border: 1px solid #333;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  width: var(--cell-size);
+  height: var(--cell-size);
   cursor: pointer;
-  width: var(--size);
-  height: var(--size);
+  background: var(--cell-bg);
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cell-given {
+  color: var(--color-given);
+  background: var(--cell-given-bg);
+}
+
+.cell:hover {
+  background: var(--cell-selected-bg) !important;
 }
 
 .cell-selected {
-  background-color: aqua;
-  border-color: blueviolet;
+  background: var(--cell-selected-bg) !important;
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.cell-selected .cell-value {
+  color: var(--color-accent-dark);
 }
 
 .cell-error {
-  background-color: rgb(248, 146, 146);
+  color: var(--color-error) !important;
+  background: var(--cell-error-bg) !important;
 }

@@ -1,12 +1,10 @@
 import { create } from "zustand";
 import type { CellProps } from "../components/Cell/Cell";
-/*
 import {
   DIFFICULTY_SETTINGS,
   GAME_DIFFICULTIES,
   type GAME_DIFFICULTY_TYPES,
 } from "../constants/GameDifficulties";
-*/
 
 interface GridState {
   grid: CellProps[][];
@@ -22,7 +20,7 @@ interface GridState {
 
 export const GRID_SIZE = 9;
 const emptyCellValue = 0;
-// const gameDifficulty = GAME_DIFFICULTIES.EASY;
+const gameDifficulty = GAME_DIFFICULTIES.MEDIUM;
 
 /*
  * Check if a value could fit in a given cell
@@ -94,24 +92,19 @@ const possibleValues = (
  *
  */
 export const generateRandomSudoku = () => {
-  const grid = Array.from({ length: GRID_SIZE }, () =>
-    Array<CellProps>(GRID_SIZE),
+  const grid: CellProps[][] = Array.from({ length: GRID_SIZE }, (_, i) =>
+    Array.from({ length: GRID_SIZE }, (_, j) => ({
+      rowIndex: i,
+      colIndex: j,
+      expectedValue: emptyCellValue,
+      value: emptyCellValue,
+      isGiven: true,
+    })),
   );
 
   const initialValuesToTest = [1, 2, 3, 4, 5, 6, 7, 8, 9].sort(
     () => Math.random() - 0.5,
   );
-
-  for (let i = 0; i < GRID_SIZE; i++) {
-    for (let j = 0; j < GRID_SIZE; j++) {
-      grid[i][j] = {
-        rowIndex: i,
-        colIndex: j,
-        expectedValue: emptyCellValue,
-        value: emptyCellValue,
-      };
-    }
-  }
 
   const stack: {
     cell: CellProps;
@@ -122,10 +115,12 @@ export const generateRandomSudoku = () => {
   let colIndex = 0;
 
   while (rowIndex < GRID_SIZE) {
+    const key = `${rowIndex}-${colIndex}`;
+
     if (!stack.some((e) => e.key === rowIndex + "-" + colIndex)) {
       stack.push({
         cell: grid[rowIndex][colIndex],
-        key: rowIndex + "-" + colIndex,
+        key: key,
         remainingValuesToTest: initialValuesToTest,
       });
     }
@@ -189,7 +184,6 @@ export const generateRandomSudoku = () => {
 /*
  *
  */
-/*
 const applyDifficulty = (
   grid: CellProps[][],
   difficulty: GAME_DIFFICULTY_TYPES,
@@ -206,21 +200,18 @@ const applyDifficulty = (
     const colIndex = Math.floor(Math.random() * GRID_SIZE);
 
     if (grid[rowIndex][colIndex].value !== emptyCellValue) {
-      grid[rowIndex][colIndex].value = emptyCellValue;
+      grid[rowIndex][colIndex] = {...grid[rowIndex][colIndex], value: emptyCellValue, isGiven: false};
       removed++;
     }
   }
   return grid;
 };
-*/
 
-const initialGrid: CellProps[][] = generateRandomSudoku();
-/*
+// const initialGrid: CellProps[][] = generateRandomSudoku();
 const initialGrid: CellProps[][] = applyDifficulty(
-  generateSudokuIterative(),
+  generateRandomSudoku(),
   gameDifficulty,
 );
-*/
 
 /*
  * Grid store

@@ -1,0 +1,82 @@
+/* ═══════════════════════════════════════════════════════════════════════════════
+   SOFT GARDEN — Design Tokens
+   ═══════════════════════════════════════════════════════════════════════════════ */
+ 
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,700;9..144,800&display=swap');
+ 
+:root {
+  /* ── Palette ─────────────────────────────────────────────────────────────── */
+  --color-bg:              #F4F9F2;
+  --color-surface:         #FFFFFF;
+  --color-accent:          #7aaa76;           /* sage green — labels, subtitles */
+  --color-accent-strong:   #6BBF6A;           /* CTA green */
+  --color-accent-dark:     #4e9a4d;           /* hover */
+  --color-given:           #357a30;           /* dark forest — given cells, headings */
+  --color-filled:          #4a7fc1;           /* user-entered numbers */
+  --color-error:           #cc4444;
+  --color-border-subtle:   #C5E0BF;
+ 
+  /* ── Cell colours ────────────────────────────────────────────────────────── */
+  --cell-bg:               #FFFFFF;
+  --cell-given-bg:         #E9F5E1;
+  --cell-highlight-bg:     #F0F8F0;
+  --cell-selected-bg:      #EBF4FF;
+  --cell-error-bg:         #FFEEEE;
+  --grid-cell-border:      #D4EAD0;
+  --grid-box-border:       #7EC87D;
+ 
+  /* ── Typography ─────────────────────────────────────────────────────────── */
+  --font-display:          'Fraunces', Georgia, serif;
+  --font-body:             'Nunito', system-ui, sans-serif;
+ 
+  /* ── Sizing (defaults for mobile/tablet) ─────────────────────────────────── */
+  --cell-size:             clamp(34px, 9.5vw, 56px);
+  --cell-font-size:        clamp(14px, 3.6vw, 22px);
+  --key-size:              clamp(52px, 13vw, 76px);
+  --key-font-size:         clamp(18px, 5vw, 28px);
+  --key-gap:               8px;
+  --radius-grid:           14px;
+  --radius-key:            12px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════════════════════════════════════════ */
+ 
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+ 
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+ 
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-given);
+  -webkit-font-smoothing: antialiased;
+  /* Soft radial texture */
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(107, 191, 106, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 80% 90%, rgba(168, 213, 162, 0.12) 0%, transparent 50%);
+  background-attachment: fixed;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   APP LAYOUT
+   ═══════════════════════════════════════════════════════════════════════════════ */
+ 
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100dvh;
+  padding: env(safe-area-inset-top, 12px) 16px env(safe-area-inset-bottom, 16px);
+  gap: 14px;
+  max-width: 520px;
+  margin: 0 auto;
+}

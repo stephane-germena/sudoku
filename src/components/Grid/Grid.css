@@ -1,9 +1,18 @@
 .grid-layout {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-grid);
+  border: 2px solid var(--grid-box-border);
+  box-shadow: 0 4px 24px rgba(80, 140, 80, 0.10);
+  background: var(--cell-bg);
 }
 
 .row-layout {
     display: flex;
     flex-direction: row;
 }
+
+.row-layout:first-child .cell:first-child { border-radius: var(--radius-grid) 0 0 0; }
+.row-layout:first-child .cell:last-child  { border-radius: 0 var(--radius-grid) 0 0; }
+.row-layout:last-child  .cell:first-child { border-radius: 0 0 0 var(--radius-grid); }
+.row-layout:last-child  .cell:last-child  { border-radius: 0 0 var(--radius-grid) 0; }
