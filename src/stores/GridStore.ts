@@ -76,6 +76,34 @@ const isValid = (
 };
 
 /*
+ * isValid operating on a flat number[] instead of CellProps[][].
+ * Kept separate to avoid polluting the CellProps-based isValid above,
+ * and because the solution counter only needs numbers, not full cell objects.
+ */
+const isValidFlat = (
+  values: number[],
+  row: number,
+  col: number,
+  num: number,
+): boolean => {
+  for (let i = 0; i < GRID_SIZE; i++) {
+    if (values[row * GRID_SIZE + i] === num) return false; // row
+    if (values[i * GRID_SIZE + col] === num) return false; // col
+  }
+
+  const rowStart = Math.floor(row / 3) * 3;
+  const colStart = Math.floor(col / 3) * 3;
+
+  for (let r = rowStart; r < rowStart + 3; r++) {
+    for (let c = colStart; c < colStart + 3; c++) {
+      if (values[r * GRID_SIZE + c] === num) return false; // 3x3 box
+    }
+  }
+
+  return true;
+};
+
+/*
  *
  */
 /*
@@ -105,7 +133,7 @@ const possibleValues = (
 /*
  *
  */
-export const generateRandomSudoku = () => {
+const generateRandomSudoku = () => {
   const grid: CellProps[][] = Array.from({ length: GRID_SIZE }, (_, i) =>
     Array.from({ length: GRID_SIZE }, (_, j) => ({
       rowIndex: i,
@@ -196,30 +224,84 @@ export const generateRandomSudoku = () => {
 };
 
 /*
- *
+ * Counts how many solutions a given puzzle has, up to a maximum of 2.
+ * Stops as soon as a second solution is found, so it never does more
+ * work than necessary.
  */
-const applyDifficulty = (
-  grid: CellProps[][],
-  difficulty: GAME_DIFFICULTY_TYPES,
-) => {
-  const { clues } = difficulty;
-  const cellsToRemove = GRID_SIZE * GRID_SIZE - clues;
-  let removed = 0;
+const countSolutions = (values: number[], limit = 2): number => {
+  // Find the first empty cell (value === 0)
+  const emptyIndex = values.indexOf(0);
 
-  // Clone the grid to avoid mutating the original solution
-  while (removed < cellsToRemove) {
-    const rowIndex = Math.floor(Math.random() * GRID_SIZE);
-    const colIndex = Math.floor(Math.random() * GRID_SIZE);
+  // No empty cells left — this is a complete solution
+  if (emptyIndex === -1) return 1;
 
-    if (grid[rowIndex][colIndex].value !== EMPTY_CELL_VALUE) {
-      grid[rowIndex][colIndex] = {
-        ...grid[rowIndex][colIndex],
-        value: EMPTY_CELL_VALUE,
-        isGiven: false,
-      };
-      removed++;
+  const row = Math.floor(emptyIndex / GRID_SIZE);
+  const col = emptyIndex % GRID_SIZE;
+  let count = 0;
+
+  for (let num = 1; num <= 9; num++) {
+    if (isValidFlat(values, row, col, num)) {
+      values[emptyIndex] = num;
+      count += countSolutions(values, limit);
+      values[emptyIndex] = 0; // backtrack
+
+      // Short-circuit: no need to keep counting beyond the limit
+      if (count >= limit) return count;
     }
   }
+
+  return count;
+};
+
+/*
+ * Removes cells from a solved grid one at a time, in random order,
+ * only committing a removal when the puzzle still has exactly one solution.
+ * Guarantees uniqueness for any difficulty level.
+ */
+const applyDifficulty = (
+  solvedGrid: CellProps[][],
+  difficulty: GAME_DIFFICULTY_TYPES,
+): CellProps[][] => {
+  const { clues } = difficulty;
+  const cellsToRemove = GRID_SIZE * GRID_SIZE - clues;
+
+  // Deep clone so we never mutate the original solved grid
+  const grid: CellProps[][] = solvedGrid.map((row) =>
+    row.map((cell) => ({ ...cell, isGiven: true }))
+  );
+
+  // Build a shuffled list of all 81 positions to try removing
+  const positions = Array.from({ length: GRID_SIZE * GRID_SIZE }, (_, i) => i)
+    .sort(() => Math.random() - 0.5);
+
+  let removed = 0;
+
+  for (const pos of positions) {
+    if (removed >= cellsToRemove) break;
+
+    const r = Math.floor(pos / GRID_SIZE);
+    const c = pos % GRID_SIZE;
+
+    // Skip cells already emptied
+    if (grid[r][c].value === 0) continue;
+
+    const backup = grid[r][c].value;
+
+    // Tentatively remove the cell
+    grid[r][c] = { ...grid[r][c], value: 0, isGiven: false };
+
+    // Extract current values as a flat array for the solution counter
+    const flat = grid.flatMap((row) => row.map((cell) => cell.value));
+
+    // Only keep the removal if the puzzle still has exactly one solution
+    if (countSolutions(flat) === 1) {
+      removed++;
+    } else {
+      // Restore — this removal would create ambiguity
+      grid[r][c] = { ...grid[r][c], value: backup, isGiven: true };
+    }
+  }
+
   return grid;
 };
 
