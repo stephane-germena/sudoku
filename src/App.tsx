@@ -16,11 +16,12 @@ import { useAppStore } from "./stores/AppStore";
 function App() {
   const [showNewGameSettings, setShowNewGameSettings] = useState(false);
 
-  const displayMode = useGridStore((state) => state.displayMode);
-  const grid = useGridStore((state) => state.grid);
-
   const isFirstGameLaunched = useAppStore((state) => state.isFirstGameLaunched);
   const setTimeRunning = useAppStore((state) => state.setTimeRunning);
+  
+
+  const displayMode = useGridStore((state) => state.displayMode);
+  const grid = useGridStore((state) => state.grid);
 
   const handledNewGameButton = () => {
     setShowNewGameSettings(true);

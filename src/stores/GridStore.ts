@@ -34,6 +34,8 @@ interface GridState {
   startNewGame: (gameDifficulty?: GAME_DIFFICULTY_TYPES) => void;
   setGameDifficulty: (gameDifficulty: GAME_DIFFICULTY_TYPES) => void;
   toggleDisplayMode: (displayMode?: DISPLAY_MODES) => void;
+  isGridFull: (grid: CellProps[][]) => boolean;
+  isGridSolved: (grid: CellProps[][]) => boolean;
 }
 
 /*
@@ -305,6 +307,9 @@ const applyDifficulty = (
   return grid;
 };
 
+/*
+*
+*/
 const buildNewGrid = (difficulty: GAME_DIFFICULTY_TYPES): CellProps[][] => {
   const grid = generateRandomSudoku();
   return applyDifficulty(grid, difficulty);
@@ -394,5 +399,33 @@ export const useGridStore = create<GridState>((set, get) => ({
           ? EMOJI
           : NUMBER,
     }));
+  },
+
+  isGridFull: (grid) => {
+    let isFull = true;
+
+    grid.forEach((row) => {
+      row.forEach((cell) => {
+        if (cell.value == EMPTY_CELL_VALUE) {
+          isFull = false;
+        }
+      });
+    });
+
+    return isFull;
+  },
+
+  isGridSolved: (grid) => {
+    let isSolved = true;
+
+    grid.forEach((row) => {
+      row.forEach((cell) => {
+        if (cell.expectedValue !== cell.value) {
+          isSolved = false;
+        }
+      });
+    });
+
+    return isSolved;
   },
 }));

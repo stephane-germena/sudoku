@@ -1,6 +1,6 @@
 import "./NewGameSettings.css";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   DIFFICULTY_SETTINGS,
@@ -14,9 +14,7 @@ interface NewGameSettingsProps {
   onClose: () => void;
 }
 
-export const NewGameSettings = ({
-  onClose,
-}: NewGameSettingsProps) => {
+export const NewGameSettings = ({ onClose }: NewGameSettingsProps) => {
   const difficulties = Object.values(
     DIFFICULTY_SETTINGS,
   ) as GAME_DIFFICULTY_TYPES[];
@@ -27,7 +25,7 @@ export const NewGameSettings = ({
 
   const setGameDifficulty = useGridStore((state) => state.setGameDifficulty);
   const startNewGame = useGridStore((state) => state.startNewGame);
-  
+
   const handleStartNewGame = (difficulty: GAME_DIFFICULTY_TYPES) => {
     launchFirstGame();
     setGameDifficulty(difficulty);
@@ -46,7 +44,9 @@ export const NewGameSettings = ({
   };
 
   // Pause timer when modal is displayed
-  setTimeRunning(false);
+  useEffect(() => {
+    setTimeRunning(false);
+  });
 
   return (
     <>
@@ -66,7 +66,9 @@ export const NewGameSettings = ({
         <div className="new-game-settings-handle" />
 
         <h2 className="new-game-settings-title">Choose difficulty</h2>
-        <p className="new-game-settings-subtitle">A new puzzle will be generated</p>
+        <p className="new-game-settings-subtitle">
+          A new puzzle will be generated
+        </p>
 
         <div className="new-game-settings-cards">
           {difficulties.map((diff) => {
@@ -78,9 +80,15 @@ export const NewGameSettings = ({
                 onClick={() => selectDifficulty(diff)}
                 type="button"
               >
-                {isActive && <span className="new-game-settings-card-check">✓</span>}
-                <span className="new-game-settings-card-emoji">{diff.emoji}</span>
-                <span className="new-game-settings-card-label">{diff.label}</span>
+                {isActive && (
+                  <span className="new-game-settings-card-check">✓</span>
+                )}
+                <span className="new-game-settings-card-emoji">
+                  {diff.emoji}
+                </span>
+                <span className="new-game-settings-card-label">
+                  {diff.label}
+                </span>
               </button>
             );
           })}
