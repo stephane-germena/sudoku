@@ -1,6 +1,4 @@
 TODO:
-- Victory
-- Handle errors (wait for the end)
 - Hints
 - Undo
 - Notes
@@ -8,6 +6,7 @@ TODO:
 - Keyboard tile: disable when all filled
 - Allow select on given cells
 - Highlight cells with same value
+- Select a keyboard tile then fill cells
 
 Later:
 - Keep highest score

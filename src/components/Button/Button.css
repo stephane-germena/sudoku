@@ -1,0 +1,40 @@
+.app-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 22px;
+  border-radius: 50px;
+  background: var(--button-background, var(--color-surface));
+  border: 1.5px solid var(--color-border-subtle);
+  border-color: var(--button-border-color);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--button-text-color, var(--color-given));
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease,
+    opacity 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app-button:hover {
+  background: var(--button-background-hover, var(--cell-given-bg));
+}
+.app-button:active {
+  transform: scale(0.96);
+}
+
+.app-button-disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.app-button-icon {
+  font-size: 1rem;
+}
+
+.app-button-label {
+  font-size: 1rem;
+}
