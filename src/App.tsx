@@ -16,6 +16,7 @@ import { Button } from "./components/Button/Button";
 
 function App() {
   const [showNewGameSettings, setShowNewGameSettings] = useState(false);
+  const [isUndoDisabled, setIsUndoDisabled] = useState(true);
 
   const isFirstGameLaunched = useAppStore((state) => state.isFirstGameLaunched);
   const setTimeRunning = useAppStore((state) => state.setTimeRunning);
@@ -23,7 +24,19 @@ function App() {
   const displayMode = useGridStore((state) => state.displayMode);
   const grid = useGridStore((state) => state.grid);
 
+  // Undo management
+  const undoLastUpdate = useGridStore((state) => state.undoLastUpdate);
+  const isLastUpdateUndoable = useGridStore((state) => state.isLastUpdateUndoable);
+  if (isLastUpdateUndoable() && isUndoDisabled) {
+    setIsUndoDisabled(false);
+  } else if (!isLastUpdateUndoable() && !isUndoDisabled) {
+    setIsUndoDisabled(true);
+  }
+
+  // const isUndoDisabled = !isLastUpdateUndoable();
+
   const tooltipInProgress = "Coming soon!";
+  const tooltipActionBlocked = "Action not possible!";
 
   const handledNewGameButton = () => {
     setShowNewGameSettings(true);
@@ -73,7 +86,9 @@ function App() {
           label="Undo"
           icon="↩"
           type="secondary"
-          tooltipMessage={tooltipInProgress}
+          disabled={isUndoDisabled}
+          tooltipMessage={isUndoDisabled ? tooltipActionBlocked : ""}
+          onClick={undoLastUpdate}
         />
         <Button
           label="Hints"

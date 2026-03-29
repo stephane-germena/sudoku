@@ -53,7 +53,7 @@ export const Button = ({
     if (timerRef.current) clearTimeout(timerRef.current);
     setClickVisible(true);
     timerRef.current = setTimeout(() => setClickVisible(false), 1500);
-    onClick?.();
+    if (!disabled) onClick?.();
   };
 
   const handleMouseEnter = () => {
@@ -69,7 +69,6 @@ export const Button = ({
       type="button"
       className={classes}
       style={styles}
-      disabled={disabled}
       aria-label={label}
       onClick={handleClick}
       onMouseEnter={handleMouseEnter}

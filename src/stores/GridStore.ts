@@ -15,6 +15,7 @@ export const DEFAULT_GAME_DIFFICULTY = DIFFICULTY_SETTINGS.HARD;
 interface GridState {
   // Core grid
   grid: CellProps[][];
+  gridHistory: CellProps[][][];
   selectedCell: { rowIndex: number; colIndex: number } | null;
 
   // Game settings
@@ -36,6 +37,11 @@ interface GridState {
   toggleDisplayMode: (displayMode?: DISPLAY_MODES) => void;
   isGridFull: (grid: CellProps[][]) => boolean;
   isGridSolved: (grid: CellProps[][]) => boolean;
+
+  // Grid history
+  storeGridState: (grid: CellProps[][]) => void;
+  undoLastUpdate: () => void;
+  isLastUpdateUndoable: () => boolean;
 }
 
 /*
@@ -131,6 +137,31 @@ const possibleValues = (
   return possibleValues;
 };
 */
+
+/*
+ *
+ */
+const diffBetweenGrids = (
+  grid1: CellProps[][],
+  grid2: CellProps[][],
+): { rowIndex: number; colIndex: number } | null => {
+  let firstDiffCell = null;
+
+  for (let rowIndex = 0; rowIndex < GRID_SIZE; rowIndex++) {
+    for (let colIndex = 0; colIndex < GRID_SIZE; colIndex++) {
+      if (grid1[rowIndex][colIndex] !== grid2[rowIndex][colIndex]) {
+        firstDiffCell = {
+          rowIndex: rowIndex,
+          colIndex: colIndex,
+        };
+
+        break;
+      }
+    }
+  }
+
+  return firstDiffCell;
+};
 
 /*
  *
@@ -269,12 +300,14 @@ const applyDifficulty = (
 
   // Deep clone so we never mutate the original solved grid
   const grid: CellProps[][] = solvedGrid.map((row) =>
-    row.map((cell) => ({ ...cell, isGiven: true }))
+    row.map((cell) => ({ ...cell, isGiven: true })),
   );
 
   // Build a shuffled list of all 81 positions to try removing
-  const positions = Array.from({ length: GRID_SIZE * GRID_SIZE }, (_, i) => i)
-    .sort(() => Math.random() - 0.5);
+  const positions = Array.from(
+    { length: GRID_SIZE * GRID_SIZE },
+    (_, i) => i,
+  ).sort(() => Math.random() - 0.5);
 
   let removed = 0;
 
@@ -308,18 +341,22 @@ const applyDifficulty = (
 };
 
 /*
-*
-*/
+ *
+ */
 const buildNewGrid = (difficulty: GAME_DIFFICULTY_TYPES): CellProps[][] => {
   const grid = generateRandomSudoku();
   return applyDifficulty(grid, difficulty);
 };
 
+const initialGrid = buildNewGrid(DEFAULT_GAME_DIFFICULTY);
+const initialHistory = [initialGrid];
+
 /*
  * Grid store
  */
 export const useGridStore = create<GridState>((set, get) => ({
-  grid: buildNewGrid(DEFAULT_GAME_DIFFICULTY),
+  grid: initialGrid,
+  gridHistory: initialHistory,
   selectedCell: null,
   displayMode: NUMBER,
   gameDifficulty: DEFAULT_GAME_DIFFICULTY,
@@ -363,6 +400,8 @@ export const useGridStore = create<GridState>((set, get) => ({
 
       return { grid: newGrid };
     });
+
+    get().storeGridState(get().grid);
   },
 
   updateSelectedCell: (value) => {
@@ -376,11 +415,13 @@ export const useGridStore = create<GridState>((set, get) => ({
   // ----- Game flow -----
 
   startNewGame: (gameDifficulty) => {
+    const newGrid = buildNewGrid(
+      gameDifficulty ? gameDifficulty : DEFAULT_GAME_DIFFICULTY,
+    );
     set(() => {
       return {
-        grid: buildNewGrid(
-          gameDifficulty ? gameDifficulty : DEFAULT_GAME_DIFFICULTY,
-        ),
+        grid: newGrid,
+        gridHistory: [newGrid],
       };
     });
   },
@@ -427,5 +468,45 @@ export const useGridStore = create<GridState>((set, get) => ({
     });
 
     return isSolved;
+  },
+
+  // ----- Game history -----
+
+  storeGridState: (grid) => {
+    set((state) => {
+      return {
+        gridHistory: [...state.gridHistory, grid],
+      };
+    });
+  },
+
+  undoLastUpdate: () => {
+    if (get().isLastUpdateUndoable()) {
+      set((state) => {
+        const gridHistory = state.gridHistory;
+        const gridToRestore = gridHistory[gridHistory.length - 2];
+        const previousGrid = gridHistory[gridHistory.length - 1];
+
+        if (previousGrid) {
+          const diffCoordinates = diffBetweenGrids(gridToRestore, previousGrid);
+          if (diffCoordinates)
+            state.setSelectedCell(
+              diffCoordinates.rowIndex,
+              diffCoordinates.colIndex,
+            );
+        }
+
+        return {
+          grid: gridToRestore,
+          gridHistory: gridHistory.slice(0, -1),
+        };
+      });
+    }
+  },
+
+  isLastUpdateUndoable: () => {
+    const gridHistory = get().gridHistory;
+
+    return gridHistory.length > 1;
   },
 }));
