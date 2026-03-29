@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import "./Button.css";
 
 interface ButtonProps {
@@ -10,6 +11,7 @@ interface ButtonProps {
   backgroundColorHover?: string;
   borderColor?: string;
   textColor?: string;
+  tooltipMessage?: string;
 }
 
 export const Button = ({
@@ -21,9 +23,14 @@ export const Button = ({
   backgroundColorHover,
   borderColor,
   textColor,
-  onClick
+  tooltipMessage,
+  onClick,
 }: ButtonProps) => {
   const appButtonClassName = "app-button";
+
+  const [clickVisible, setClickVisible] = useState(false);
+  const [hoverVisible, setHoverVisible] = useState(false);
+  const tooltipVisible = clickVisible || hoverVisible;
 
   const classes = [
     appButtonClassName,
@@ -37,20 +44,45 @@ export const Button = ({
     "--button-background": backgroundColor,
     "--button-background-hover": backgroundColorHover,
     "--button-border-color": borderColor,
-    "--button-text-color": textColor
+    "--button-text-color": textColor,
   } as React.CSSProperties;
+
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleClick = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setClickVisible(true);
+    timerRef.current = setTimeout(() => setClickVisible(false), 1500);
+    onClick?.();
+  };
+
+  const handleMouseEnter = () => {
+    setHoverVisible(true);
+  };
+
+  const handleMouseLeave = () => {
+    setHoverVisible(false);
+  };
 
   return (
     <button
       type="button"
       className={classes}
-      onClick={onClick}
+      style={styles}
       disabled={disabled}
       aria-label={label}
-      style={styles}
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      <span className="{appButtonClassName + '-icon'}">{icon}</span>
-      <span className="{appButtonClassName + '-label'}">{label}</span>
+      <span className={`${appButtonClassName}-icon`}>{icon}</span>
+      <span className={`${appButtonClassName}-label`}>{label}</span>
+
+      {tooltipVisible && tooltipMessage && (
+        <div className="tooltip-container" style={{ width: 0, height: 0 }}>
+          <span className="tooltip">{tooltipMessage}</span>
+        </div>
+      )}
     </button>
   );
 };

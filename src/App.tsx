@@ -23,6 +23,8 @@ function App() {
   const displayMode = useGridStore((state) => state.displayMode);
   const grid = useGridStore((state) => state.grid);
 
+  const tooltipInProgress = "Coming soon!";
+
   const handledNewGameButton = () => {
     setShowNewGameSettings(true);
     setTimeRunning(false);
@@ -67,7 +69,12 @@ function App() {
       </div>
 
       <div className="app-actions">
-        <Button label="Undo" icon="↩" type="secondary" />
+        <Button
+          label="Undo"
+          icon="↩"
+          type="secondary"
+          tooltipMessage={tooltipInProgress}
+        />
         <Button
           label="Hints"
           icon="💡"
@@ -76,10 +83,16 @@ function App() {
           backgroundColorHover="#FFF3CC"
           textColor="#8A6400"
           borderColor="#F0C040"
+          tooltipMessage={tooltipInProgress}
         />
-        <Button label="Notes" icon="✏️" type="secondary" />
+        <Button
+          label="Notes"
+          icon="✏️"
+          type="secondary"
+          tooltipMessage={tooltipInProgress}
+        />
       </div>
-    </ div>
+    </div>
   );
 }
 
