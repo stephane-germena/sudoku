@@ -23,9 +23,9 @@ export const NewGameButton = ({ showDiffPicker, onClick, onClose }: NewGameButto
 
   return (
     <>
-      <div className="new-game-button" onClick={handleClick}>
+      <button className="new-game-button" onClick={handleClick}>
         + New game
-      </div>
+      </button>
 
       {/* -- New game settings -- */}
       {showDiffPicker && (
