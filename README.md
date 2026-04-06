@@ -3,9 +3,8 @@ TODO:
 - Notes
 - Reset without new game
 - Keyboard tile: disable when all filled
-- Allow select on given cells
-- Highlight cells with same value
 - Redo
+- Time spent in each mode
 
 Later:
 - Keep highest score
