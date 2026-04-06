@@ -19,7 +19,7 @@ interface GridProps {
 }
 
 export const Grid = ({ data, displayMode }: GridProps) => {
-  const displayMap = DISPLAY_MAPS[displayMode ? displayMode : NUMBER];
+  const displayMap = DISPLAY_MAPS[displayMode || NUMBER];
 
   const elapsedSeconds = useAppStore((state) => state.elapsedSeconds);
   const resetTimer = useAppStore((state) => state.resetTimer);

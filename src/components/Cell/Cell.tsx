@@ -39,7 +39,7 @@ export const Cell = ({
     !isCellSeletected && (isInSelectedRow || isInSelectedCol)
       ? "cell-highlight"
       : "",
-    hasError ? "cell-error" : "",
+    hasError ? "cell-error-hidden" : "",
     value !== 0 && !isGiven ? "cell-filled" : "",
     isGiven ? "cell-given" : "cell-not-given",
   ]
@@ -77,10 +77,11 @@ export const Cell = ({
     <div
       className={classes}
       style={borderStyle}
+      role="button"
       onClick={() => handleClick(rowIndex, colIndex)}
     >
       <span className="cell-value">
-        {displayValue !== null ? displayValue : value}
+        {displayValue === null ? value : displayValue}
       </span>
     </div>
   );

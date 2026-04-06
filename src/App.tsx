@@ -33,8 +33,6 @@ function App() {
     setIsUndoDisabled(true);
   }
 
-  // const isUndoDisabled = !isLastUpdateUndoable();
-
   const tooltipInProgress = "Coming soon!";
   const tooltipActionBlocked = "Action not possible!";
 
