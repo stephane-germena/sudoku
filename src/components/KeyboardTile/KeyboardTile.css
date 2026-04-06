@@ -1,6 +1,7 @@
 /* ── KeyboardTile ───────────────────────────────────────────────────────────── */
 
 .keyboard-tile {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -41,6 +42,25 @@
 
 .keyboard-tile-selected {
   background-color: var(--color-key-bg-selected);
+  color: var(--color-key-selected);
+}
+
+.keyboard-tile-badge {
+  position: absolute;
+  top: 5px;
+  right: 6px;
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-border-subtle);
+}
+
+.keyboard-tile-badge-zero {
+  color: var(--color-accent);
+}
+
+.keyboard-tile-badge-selected {
   color: var(--color-key-selected);
 }
 

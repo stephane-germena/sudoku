@@ -88,17 +88,20 @@ export const Cell = ({
 
   // Handle actions
   const handleClick = (rowIndex: number, colIndex: number) => {
+    const shouldUpdateValue = !isGiven && activeKeyboardTile !== null;
+
     if (
       selectedCell &&
       rowIndex === selectedCell.rowIndex &&
-      colIndex === selectedCell.colIndex
+      colIndex === selectedCell.colIndex &&
+      !shouldUpdateValue
     ) {
       unselectCell();
     } else {
       setSelectedCell(rowIndex, colIndex);
     }
 
-    if (!isGiven && activeKeyboardTile !== null) {
+    if (shouldUpdateValue) {
       updateSelectedCell(activeKeyboardTile);
     }
   };

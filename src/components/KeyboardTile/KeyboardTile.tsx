@@ -18,7 +18,10 @@ export const KeyboardTile = ({
 }: KeyboardTileProps) => {
   const currentSelectedTile = useKeyboardStore((state) => state.selectedTile);
   const setSelectedTile = useKeyboardStore((state) => state.setSelectedTile);
+
+  const grid = useGridStore((state) => state.grid);
   const updateSelectedCell = useGridStore((state) => state.updateSelectedCell);
+  const remainingSlots = useGridStore((state) => state.remainingSlots);
 
   const isSelectedTile = currentSelectedTile === value;
   const isEraseTile = value === TILE_EMPTY;
@@ -40,6 +43,7 @@ export const KeyboardTile = ({
   };
 
   const label = displayValue ?? String(value);
+  const remainingSlotsValue = remainingSlots(grid, value);
 
   return (
     <button
@@ -49,6 +53,13 @@ export const KeyboardTile = ({
       type="button"
     >
       <span className="keyboard-tile-label">{label}</span>
+      {!isEraseTile && (
+        <span
+          className={`keyboard-tile-badge ${remainingSlotsValue !== 0 ? "keyboard-tile-badge-zero" : ""} ${isSelectedTile ? "keyboard-tile-badge-selected" : ""}`}
+        >
+          {remainingSlotsValue}
+        </span>
+      )}
     </button>
   );
 };

@@ -37,6 +37,7 @@ interface GridState {
   toggleDisplayMode: (displayMode?: DISPLAY_MODES) => void;
   isGridFull: (grid: CellProps[][]) => boolean;
   isGridSolved: (grid: CellProps[][]) => boolean;
+  remainingSlots: (grid: CellProps[][], value: number) => number;
 
   // Grid history
   storeGridState: (grid: CellProps[][]) => void;
@@ -468,6 +469,20 @@ export const useGridStore = create<GridState>((set, get) => ({
     });
 
     return isSolved;
+  },
+
+  remainingSlots: (grid, value) => {
+    let remainingSlotsForValue = GRID_SIZE;
+
+    grid.forEach((row) => {
+      row.forEach((cell) => {
+        if (cell.value === value) {
+          remainingSlotsForValue = remainingSlotsForValue - 1;
+        }
+      });
+    });
+
+    return remainingSlotsForValue;
   },
 
   // ----- Game history -----
