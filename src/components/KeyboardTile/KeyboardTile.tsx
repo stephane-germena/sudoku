@@ -39,10 +39,7 @@ export const KeyboardTile = ({
     }
   };
 
-  const label =
-    displayValue !== undefined && displayValue !== null
-      ? displayValue
-      : String(value);
+  const label = displayValue ?? String(value);
 
   return (
     <button
