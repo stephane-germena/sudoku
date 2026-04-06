@@ -48,14 +48,14 @@ export const Cell = ({
 
   let borderRightStyle = "1px solid var(--grid-cell-border)";
   if (colIndex === (GRID_SIZE - 1)) {
-    borderRightStyle = "";
+    borderRightStyle = "0";
   } else if (colIndex % 3 === 2) {
     borderRightStyle = "2px solid var(--grid-box-border)";
   }
 
   let borderBottomStyle = "1px solid var(--grid-cell-border)";
   if (rowIndex === (GRID_SIZE - 1)) {
-    borderBottomStyle = "";
+    borderBottomStyle = "0";
   } else if (rowIndex % 3 === 2) {
     borderBottomStyle = "2px solid var(--grid-box-border)";
   }
@@ -63,6 +63,8 @@ export const Cell = ({
   const borderStyle: React.CSSProperties = {
     borderRight: borderRightStyle,
     borderBottom: borderBottomStyle,
+    borderTop: 0,
+    borderLeft: 0
   };
 
   const handleClick = (rowIndex: number, colIndex: number) => {
@@ -74,15 +76,14 @@ export const Cell = ({
   };
 
   return (
-    <div
+    <button
       className={classes}
       style={borderStyle}
-      role="button"
       onClick={() => handleClick(rowIndex, colIndex)}
     >
       <span className="cell-value">
         {displayValue === null ? value : displayValue}
       </span>
-    </div>
+    </button>
   );
 };
