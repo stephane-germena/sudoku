@@ -9,6 +9,7 @@ import {
 import { KeyboardTile } from "../KeyboardTile/KeyboardTile";
 
 import { EMPTY_CELL_VALUE } from "../../stores/GridStore";
+import { TILE_EMPTY } from "../../stores/KeyboardStore";
 
 interface KeyboardProps {
   displayMode?: DISPLAY_MODES;
@@ -19,7 +20,7 @@ export const Keyboard = ({ displayMode }: KeyboardProps) => {
 
   const tilesValue = [
     [1, 2, 3, 4, 5],
-    [6, 7, 8, 9, 0],
+    [6, 7, 8, 9, TILE_EMPTY],
   ];
 
   return (

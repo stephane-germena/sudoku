@@ -31,6 +31,8 @@
   --color-key-border: #c5e0bf;
   --color-key-hover: #e9f5e1;
   --color-key-active: #d4edd0;
+  --color-key-bg-selected: #0aaa5a;
+  --color-key-selected: #fcecec;
 
   --color-key-erase-bg: #fff0f0;
   --color-key-erase-border: #ffcccc;

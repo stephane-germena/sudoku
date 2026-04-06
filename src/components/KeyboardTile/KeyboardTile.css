@@ -19,7 +19,7 @@
   touch-action: manipulation;
 }
 
-.keyboard-tile:hover {
+.keyboard-tile-unselected:hover {
   background: var(--color-key-hover);
   box-shadow: 0 2px 8px rgba(80, 140, 80, 0.12);
 }
@@ -37,6 +37,11 @@
   color: var(--color-text-primary);
   line-height: 1;
   pointer-events: none;
+}
+
+.keyboard-tile-selected {
+  background-color: var(--color-key-bg-selected);
+  color: var(--color-key-selected);
 }
 
 /* ── Erase variant ───────────────────────────────────────────────────────────── */

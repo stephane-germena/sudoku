@@ -3,6 +3,7 @@ import "./Cell.css";
 import React from "react";
 
 import { GRID_SIZE, useGridStore } from "../../stores/GridStore";
+import { useKeyboardStore } from "../../stores/KeyboardStore";
 
 export interface CellProps {
   rowIndex: number;
@@ -21,9 +22,12 @@ export const Cell = ({
   displayValue,
   isGiven,
 }: CellProps) => {
+  // Stores dependencies
   const selectedCell = useGridStore((state) => state.selectedCell);
   const setSelectedCell = useGridStore((state) => state.setSelectedCell);
   const unselectCell = useGridStore((state) => state.unselectCell);
+  const updateSelectedCell = useGridStore((state) => state.updateSelectedCell);
+  const activeKeyboardTile = useKeyboardStore((state) => state.selectedTile);
 
   const isCellSeletected =
     selectedCell?.rowIndex === rowIndex && selectedCell?.colIndex === colIndex;
@@ -33,6 +37,7 @@ export const Cell = ({
 
   const hasError = value !== 0 && value !== expectedValue;
 
+  // Set classes
   const classes = [
     "cell",
     isCellSeletected ? "cell-selected" : "",
@@ -46,6 +51,7 @@ export const Cell = ({
     .filter(Boolean)
     .join(" ");
 
+  // Set styles
   let borderRightStyle = "1px solid var(--grid-cell-border)";
   if (colIndex === (GRID_SIZE - 1)) {
     borderRightStyle = "0";
@@ -67,11 +73,16 @@ export const Cell = ({
     borderLeft: 0
   };
 
+  // Handle actions
   const handleClick = (rowIndex: number, colIndex: number) => {
     if (isGiven) {
       unselectCell();
     } else {
       setSelectedCell(rowIndex, colIndex);
+
+      if (activeKeyboardTile !== null) {
+        updateSelectedCell(activeKeyboardTile);
+      }
     }
   };
 

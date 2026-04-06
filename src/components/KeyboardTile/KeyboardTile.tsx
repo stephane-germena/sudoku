@@ -1,5 +1,6 @@
 import "./KeyboardTile.css";
 
+import { TILE_EMPTY, useKeyboardStore } from "../../stores/KeyboardStore";
 import { useGridStore } from "../../stores/GridStore";
 
 interface KeyboardTileProps {
@@ -15,23 +16,37 @@ export const KeyboardTile = ({
   variant = "default",
   onPress,
 }: KeyboardTileProps) => {
+  const currentSelectedTile = useKeyboardStore((state) => state.selectedTile);
+  const setSelectedTile = useKeyboardStore((state) => state.setSelectedTile);
   const updateSelectedCell = useGridStore((state) => state.updateSelectedCell);
+
+  const isSelectedTile = currentSelectedTile === value;
+  const isEraseTile = value === TILE_EMPTY;
 
   const handleClick = () => {
     if (onPress) {
       onPress();
     } else {
-      updateSelectedCell(value);
+      if (isSelectedTile || isEraseTile) {
+        setSelectedTile(null);
+      } else {
+        setSelectedTile(value);
+      }
+
+      if (isEraseTile) {
+        updateSelectedCell(TILE_EMPTY);
+      }
     }
   };
 
-  const label = displayValue !== undefined && displayValue !== null
-    ? displayValue
-    : String(value);
+  const label =
+    displayValue !== undefined && displayValue !== null
+      ? displayValue
+      : String(value);
 
   return (
     <button
-      className={`keyboard-tile keyboard-tile-${variant}`}
+      className={`keyboard-tile keyboard-tile-${variant} ${isSelectedTile ? "keyboard-tile-selected" : "keyboard-tile-unselected"}`}
       onClick={handleClick}
       aria-label={variant === "erase" ? "Erase" : `Enter ${value}`}
       type="button"
