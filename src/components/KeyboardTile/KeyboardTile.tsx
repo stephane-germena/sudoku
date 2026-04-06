@@ -55,7 +55,7 @@ export const KeyboardTile = ({
       <span className="keyboard-tile-label">{label}</span>
       {!isEraseTile && (
         <span
-          className={`keyboard-tile-badge ${remainingSlotsValue !== 0 ? "keyboard-tile-badge-zero" : ""} ${isSelectedTile ? "keyboard-tile-badge-selected" : ""}`}
+          className={`keyboard-tile-badge ${remainingSlotsValue === 0 ? "" : "keyboard-tile-badge-zero"} ${isSelectedTile ? "keyboard-tile-badge-selected" : ""}`}
         >
           {remainingSlotsValue}
         </span>

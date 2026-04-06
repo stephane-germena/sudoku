@@ -8,6 +8,7 @@ import {
   useGridStore,
 } from "../../stores/GridStore";
 import { useKeyboardStore } from "../../stores/KeyboardStore";
+import { getCellClasses, getCellStyles } from "../../stores/CellStore";
 
 export interface CellProps {
   rowIndex: number;
@@ -26,12 +27,14 @@ export const Cell = ({
   displayValue,
   isGiven,
 }: CellProps) => {
-  // Stores dependencies
+  // Grid store dependencies
   const grid = useGridStore((state) => state.grid);
   const selectedCell = useGridStore((state) => state.selectedCell);
   const setSelectedCell = useGridStore((state) => state.setSelectedCell);
   const unselectCell = useGridStore((state) => state.unselectCell);
   const updateSelectedCell = useGridStore((state) => state.updateSelectedCell);
+
+  // Keyboard store dependencies
   const activeKeyboardTile = useKeyboardStore((state) => state.selectedTile);
 
   const isCellSeletected =
@@ -49,41 +52,24 @@ export const Cell = ({
   const hasError = value !== EMPTY_CELL_VALUE && value !== expectedValue;
 
   // Set classes
-  const classes = [
-    "cell",
-    isCellSeletected ? "cell-selected" : "",
-    !isCellSeletected &&
-    ((isSelectedCellEmpty && (isInSelectedRow || isInSelectedCol)) ||
-      (!isSelectedCellEmpty && isSameValueAsSelected))
-      ? "cell-highlight"
-      : "",
-    hasError ? "cell-error-hidden" : "",
-    value !== 0 && !isGiven ? "cell-filled" : "",
-    isGiven ? "cell-given" : "cell-not-given",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const classes = getCellClasses(
+    value,
+    isCellSeletected,
+    isSelectedCellEmpty,
+    isInSelectedRow,
+    isInSelectedCol,
+    isSameValueAsSelected,
+    hasError,
+    isGiven,
+  );
 
   // Set styles
-  let borderRightStyle = "1px solid var(--grid-cell-border)";
-  if (colIndex === GRID_SIZE - 1) {
-    borderRightStyle = "0";
-  } else if (colIndex % 3 === 2) {
-    borderRightStyle = "2px solid var(--grid-box-border)";
-  }
-
-  let borderBottomStyle = "1px solid var(--grid-cell-border)";
-  if (rowIndex === GRID_SIZE - 1) {
-    borderBottomStyle = "0";
-  } else if (rowIndex % 3 === 2) {
-    borderBottomStyle = "2px solid var(--grid-box-border)";
-  }
-
+  const cellStyles = getCellStyles(rowIndex, colIndex, GRID_SIZE);
   const borderStyle: React.CSSProperties = {
-    borderRight: borderRightStyle,
-    borderBottom: borderBottomStyle,
-    borderTop: 0,
-    borderLeft: 0,
+    borderRight: cellStyles.borderRightStyle,
+    borderBottom: cellStyles.borderBottomStyle,
+    borderTop: cellStyles.borderTopStyle,
+    borderLeft: cellStyles.borderLeftStyle,
   };
 
   // Handle actions
@@ -91,9 +77,8 @@ export const Cell = ({
     const shouldUpdateValue = !isGiven && activeKeyboardTile !== null;
 
     if (
-      selectedCell &&
-      rowIndex === selectedCell.rowIndex &&
-      colIndex === selectedCell.colIndex &&
+      rowIndex === selectedCell?.rowIndex &&
+      colIndex === selectedCell?.colIndex &&
       !shouldUpdateValue
     ) {
       unselectCell();
